@@ -22,13 +22,13 @@ app.use(cors({origin: "'self'"}))
 // app.use(bodyParser.urlencoded({ extended: true }));
 
 // Helmetjs Security
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: "'self'",
-    scriptSrc: ["'self'","'unsafe-inline'","*.jquery.com"],
-    styleSrc: ["'self'"]
-  }
-}))
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     defaultSrc: "'self'",
+//     scriptSrc: ["'self'","'unsafe-inline'","*.jquery.com"],
+//     styleSrc: ["'self'"]
+//   }
+// }))
 app.use(helmet.hsts({
   preload: true
 }))
