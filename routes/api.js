@@ -44,10 +44,19 @@ export default function (app,model) {
         console.error(err)
         res.status(500).send({message: `Media not found. Please use Orangebot Instagram downloader first`})
       })
-
-
-      // res.status(200).send('Passed');
-      // res.status(200).send(await fetchMedia(url))
     })
     
-};
+};app.route('/api/stream/')
+    .get(async function (req, res, next){
+      const mediaId = req.query.mediaId;
+      // console.log(req.query);
+      
+      searchDB(model, mediaId)
+      .then(url => {
+        stream(url, stream=true, res);
+      })
+      .catch((err) => {
+        console.error(err)
+        res.status(500).send({message: `Media not found. Please use Orangebot Instagram downloader first`})
+      })
+    })

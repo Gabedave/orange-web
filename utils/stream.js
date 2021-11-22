@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 // import fs from 'fs';
 
-export default async function(url, res) {
+export default async function(url, stream=false, res) {
     let headers
     fetch(url, {
         mode: 'no-cors',
@@ -16,7 +16,7 @@ export default async function(url, res) {
     .then(bodyStream => {
         const mimetype = headers.get('content-type')
         if (mimetype === 'text/plain') {
-            res.status(500).send('Url Expired. Plese use downloader again')
+            res.status(500).send('Url Expired. Please use downloader again')
         }
         else {
         const chunksize = headers.get('content-length')
@@ -25,12 +25,22 @@ export default async function(url, res) {
         // const filepath = 'media/'+ filename
         // console.log(filename, mimetype, filepath)
         
-        const head = {
-            'Content-Disposition': 'attachment; filename=' + filename,
-            'Content-Length': chunksize,
-            'Content-Type': mimetype
+        let head
+        if (stream) {
+            head = {
+                'Content-Disposition': 'attachment; filename=' + filename,
+                'Content-Length': chunksize,
+                'Content-Type': mimetype
+            }
+            res.writeHead(200, head)
+        } else {
+            head = {
+                'Content-Length': chunksize,
+                'Content-Type': mimetype
+            }
+            res.writeHead(206, head)
         }
-        res.writeHead(200, head)
+        
         bodyStream.pipe(res)
 
         // fs.createReadStream(blobStream).pipe(res)
