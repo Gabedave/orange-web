@@ -45,7 +45,9 @@ export default async function(url, stream=false, res) {
 
         // fs.createReadStream(blobStream).pipe(res)
         }
-    }).catch(() => res.status(500).send({message: "internal error"}))
+    }).catch((err) => {
+        console.error(err)
+        res.status(500).send({message: "internal error"})})
 }
 
 

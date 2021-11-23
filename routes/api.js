@@ -22,12 +22,13 @@ async function searchDB(model, mediaId) {
 
 export default function (app,model) {
 
-  app.route('/api/igmedia/:mediaId')
+  app.route('/igmedia/:mediaId')
     .get(async function (req, res, next){
       let mediaId = req.params.mediaId;
-      // console.log(mediaId);
+      
+      if (!mediaId) res.status(404)
 
-      res.render('mediapage', {mediaId: mediaId});
+      res.render('mediapage', {mediaId: mediaId, mediaUrl: `/api/stream/?${mediaId}`});
       // SET TO RETURN THE PAGE CONTAINING DOWNLOAD
     });
     
@@ -38,15 +39,15 @@ export default function (app,model) {
       
       searchDB(model, mediaId)
       .then(url => {
-        stream(url, res);
+        stream(url, false, res);
       })
       .catch((err) => {
         console.error(err)
         res.status(500).send({message: `Media not found. Please use Orangebot Instagram downloader first`})
       })
     })
-    
-};app.route('/api/stream/')
+
+  app.route('/api/stream/')
     .get(async function (req, res, next){
       const mediaId = req.query.mediaId;
       // console.log(req.query);
@@ -59,4 +60,5 @@ export default function (app,model) {
         console.error(err)
         res.status(500).send({message: `Media not found. Please use Orangebot Instagram downloader first`})
       })
-    })
+    })    
+};
