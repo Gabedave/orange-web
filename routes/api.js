@@ -39,7 +39,8 @@ export default function (app,model) {
       
       searchDB(model, mediaId)
       .then(url => {
-        stream(url, false, res);
+        const _stream = false
+        stream(url, _stream, res);
       })
       .catch((err) => {
         console.error(err)
@@ -54,7 +55,8 @@ export default function (app,model) {
       
       searchDB(model, mediaId)
       .then(url => {
-        stream(url, stream=true, res);
+        const _stream = true
+        stream(url, _stream, res);
       })
       .catch((err) => {
         console.error(err)
