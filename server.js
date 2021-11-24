@@ -68,6 +68,7 @@ app.use(function(req, res, next) {
 });
 
 const handler = serverless(app);
+app.handler = handler;
 
 //Start our server and tests!
 const listener = app.listen(process.env.PORT || 4000, function () {
