@@ -29,17 +29,19 @@ export default async function(url, stream=false, res) {
         let head
         if (stream) {
             head = {
-                'Content-Disposition': 'attachment; filename=' + filename,
                 'Content-Length': chunksize,
-                'Content-Type': mimetype
+                'Content-Type': mimetype,
+                "Accept-Ranges": "bytes"
             }
             res.writeHead(200, head)
         } else {
             head = {
+                'Content-Disposition': 'attachment; filename=' + filename,
                 'Content-Length': chunksize,
-                'Content-Type': mimetype
+                'Content-Type': mimetype,
             }
-            res.writeHead(206, head)
+            res.writeHead(200, head)
+            
         }
         
         bodyStream.pipe(res)
