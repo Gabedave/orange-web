@@ -1,5 +1,5 @@
 'use strict';
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
 import defaultExport from '../utils/stream.js'
 const stream = defaultExport
 

@@ -6,7 +6,6 @@ import cors from 'cors';
 import defaultExport from './routes/api.js';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
-import serverless from 'serverless-http';
 
 const apiRoutes = defaultExport;
 const app = express();
@@ -67,11 +66,8 @@ app.use(function(req, res, next) {
     .send('Not Found');
 });
 
-const handler = serverless(app);
-app.handler = handler;
-
 //Start our server and tests!
-const listener = app.listen(process.env.PORT || 4000, function () {
+const listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
   // if(process.env.NODE_ENV==='test') {
   //   console.log('Running Tests...');
@@ -85,3 +81,5 @@ const listener = app.listen(process.env.PORT || 4000, function () {
   //   }, 3500);
   // }
 });
+
+export { app }
