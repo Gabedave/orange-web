@@ -29,7 +29,7 @@ export default async function(url, stream=false, res) {
         let head
         if (stream) {
             head = {
-                'Content-Length': chunksize,
+                // 'Content-Length': chunksize,
                 'Content-Type': mimetype,
                 "Accept-Ranges": "bytes"
             }
@@ -37,7 +37,7 @@ export default async function(url, stream=false, res) {
         } else {
             head = {
                 'Content-Disposition': 'attachment; filename=' + filename,
-                'Content-Length': chunksize,
+                // 'Content-Length': chunksize,
                 'Content-Type': mimetype,
             }
             res.writeHead(200, head)
