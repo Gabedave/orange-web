@@ -44,7 +44,7 @@ mongoose.connect(process.env.DB,
 
 const Schema = mongoose.Schema
 const mediaSchema = new Schema({
-  mediaId: { type: String, required: true },
+  igMediaId: { type: String, required: true },
   url: { type: String, required: true }
 }, { versionKey: false })
 
