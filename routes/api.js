@@ -39,6 +39,7 @@ export default function (app, model) {
 
       searchDB(model, mediaId)
         .then(url => {
+          console.log("igdownload", mediaId, url)
           const _stream = false
           stream(url, _stream, res);
         })
@@ -55,6 +56,7 @@ export default function (app, model) {
 
       searchDB(model, mediaId)
         .then(url => {
+          console.log("stream", mediaId, url)
           const _stream = true
           stream(url, _stream, res);
         })

@@ -9,13 +9,13 @@ import mongoose from 'mongoose';
 
 const apiRoutes = defaultExport;
 const app = express();
-app.set("view engine","pug")
+app.set("view engine", "pug")
 app.set("views", process.cwd() + '/views')
 
 app.use('/public', express.static(process.cwd() + '/public'));
 app.disable('x-powered-by');
 
-app.use(cors({origin: "'self'"}))
+app.use(cors({ origin: "'self'" }))
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,11 +44,11 @@ mongoose.connect(process.env.DB,
 
 const Schema = mongoose.Schema
 const mediaSchema = new Schema({
-  mediaId: {type:String,required:true},
-  url: {type:String,required:true}
-}, {versionKey: false})
+  mediaId: { type: String, required: true },
+  url: { type: String, required: true }
+}, { versionKey: false })
 
-const Media = mongoose.model('media',mediaSchema)
+const Media = mongoose.model('media_v2', mediaSchema)
 
 //Index page (static HTML)
 app.route('/')
@@ -57,10 +57,10 @@ app.route('/')
   });
 
 //Routing for API 
-apiRoutes(app,Media);
-    
+apiRoutes(app, Media);
+
 //404 Not Found Middleware
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.status(404)
     .type('text')
     .send('Not Found');
