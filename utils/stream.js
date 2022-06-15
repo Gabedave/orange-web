@@ -21,7 +21,7 @@ export default async function (url, stream = false, res) {
       }
       else {
         const chunksize = headers.get('content-length')
-        console.log("headers", headers, chunksize)
+        console.log("headers", { headers, chunksize })
         const filename =
           `${new Date().getTime().valueOf().toString()}_${headers.get('x-fb-trip-id')}.${mimetype.split('/')[1]}`
         // const filepath = 'media/'+ filename
@@ -30,19 +30,19 @@ export default async function (url, stream = false, res) {
         let head
         if (stream) {
           head = {
-            'Content-Length': chunksize,
             'Content-Type': mimetype,
             "Accept-Ranges": "bytes",
             "timing-allow-origin": "*",
           }
+          chunksize && (head["Content-Length"] = chunksize)
           res.writeHead(200, head)
         } else {
           head = {
             'Content-Disposition': 'attachment; filename=' + filename,
-            'Content-Length': chunksize,
             'Content-Type': mimetype,
             "timing-allow-origin": "*",
           }
+          chunksize && (head["Content-Length"] = chunksize)
           res.writeHead(200, head)
 
         }
