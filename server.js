@@ -1,21 +1,21 @@
-'use strict';
-import 'dotenv/config';
-import express from 'express';
+"use strict";
+import "dotenv/config";
+import express from "express";
 // const bodyParser  = require('body-parser');
-import cors from 'cors';
-import defaultExport from './routes/api.js';
-import helmet from 'helmet';
-import mongoose from 'mongoose';
+import cors from "cors";
+import defaultExport from "./routes/api.js";
+import helmet from "helmet";
+import mongoose from "mongoose";
 
 const apiRoutes = defaultExport;
 const app = express();
-app.set("view engine", "pug")
-app.set("views", process.cwd() + '/views')
+app.set("view engine", "pug");
+app.set("views", process.cwd() + "/views");
 
-app.use('/public', express.static(process.cwd() + '/public'));
-app.disable('x-powered-by');
+app.use("/public", express.static(process.cwd() + "/public"));
+app.disable("x-powered-by");
 
-app.use(cors({ origin: "'self'" }))
+app.use(cors({ origin: "'self'" }));
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,47 +28,58 @@ app.use(cors({ origin: "'self'" }))
 //     styleSrc: ["'self'"]
 //   }
 // }))
-app.use(helmet.hsts({
-  preload: true
-}))
-app.use(helmet.referrerPolicy({
-  policy: ["origin", "unsafe-url"]
-}))
+app.use(
+  helmet.hsts({
+    preload: true,
+  })
+);
+app.use(
+  helmet.referrerPolicy({
+    policy: ["origin", "unsafe-url"],
+  })
+);
 //Mongoose connection
-mongoose.connect(process.env.DB,
+mongoose.connect(process.env.DB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const Schema = mongoose.Schema;
+const mediaSchema = new Schema(
   {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-)
+    igMediaId: { type: String, required: true },
+    url: { type: String, required: true },
+  },
+  { versionKey: false }
+);
 
-const Schema = mongoose.Schema
-const mediaSchema = new Schema({
-  igMediaId: { type: String, required: true },
-  url: { type: String, required: true }
-}, { versionKey: false })
+const userMediaSchema = new Schema(
+  {
+    mediaId: { type: String, required: true },
+    userId: { type: String, required: true },
+  },
+  { versionKey: false }
+);
 
-const Media = mongoose.model('media_v2', mediaSchema)
+const Media = mongoose.model("media_v2", mediaSchema);
+const Users = mongoose.model("user_media", userMediaSchema);
 
 //Index page (static HTML)
-app.route('/')
-  .get(function (req, res) {
-    res.render('index');
-  });
+app.route("/").get(function (req, res) {
+  res.render("index");
+});
 
-//Routing for API 
-apiRoutes(app, Media);
+//Routing for API
+apiRoutes(app, Media, Users);
 
 //404 Not Found Middleware
 app.use(function (req, res, next) {
-  res.status(404)
-    .type('text')
-    .send('Not Found');
+  res.status(404).type("text").send("Not Found");
 });
 
 //Start our server and tests!
 const listener = app.listen(process.env.PORT || 3000, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+  console.log("Your app is listening on port " + listener.address().port);
   // if(process.env.NODE_ENV==='test') {
   //   console.log('Running Tests...');
   //   setTimeout(function () {
@@ -82,4 +93,4 @@ const listener = app.listen(process.env.PORT || 3000, function () {
   // }
 });
 
-export { app }
+export { app };
