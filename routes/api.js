@@ -20,7 +20,7 @@ async function searchDB(model, mediaId) {
   return await callBack(mod);
 }
 
-async function getUserDownloads(model, userId) {
+async function getUserDownloads(usersMediaModel, usersModel, userId) {
   if (!userId) return;
   if (userId === "general_user") {
     return [
@@ -28,16 +28,28 @@ async function getUserDownloads(model, userId) {
       { mediaId: "world" },
     ];
   }
-  const downloads = await model.find({
-    userId: userId,
+
+  const databaseUser = await usersModel.findOne({ igUserId: userId });
+  console.log({ databaseUser });
+  const downloads = await usersMediaModel
+    .find({
+      userId: databaseUser?._id,
+    })
+    .populate("mediaId")
+    .sort({ created_at: -1 });
+  console.log({ downloads });
+
+  const cut = downloads.slice(0, 10);
+
+  cut.forEach((item) => {
+    item.date = item.created_at?.toString();
+    item.igMediaId = item.mediaId.igMediaId;
   });
 
-  return downloads.map((item) => {
-    item.date = new Date(item.created_at).toString();
-  });
+  return cut;
 }
 
-export default function (app, mediaModel, usersMediaModel) {
+export default function (app, mediaModel, usersMediaModel, usersModel) {
   app.route("/igmedia/:mediaId").get(async function (req, res, next) {
     let mediaId = req.params.mediaId;
 
@@ -57,12 +69,17 @@ export default function (app, mediaModel, usersMediaModel) {
     let userId = req.params.userId;
     console.log({ userId });
 
-    const userDownloads = await getUserDownloads(usersMediaModel, userId);
-
     if (!userId) {
       res.status(404);
       return next();
     }
+
+    const userDownloads = await getUserDownloads(
+      usersMediaModel,
+      usersModel,
+      userId
+    );
+    console.log({ userDownloads });
 
     res.render("users-downloads", { userDownloads: userDownloads });
     // SET TO RETURN THE PAGE CONTAINING USERS DOWNLOADS

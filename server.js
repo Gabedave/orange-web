@@ -55,14 +55,32 @@ const mediaSchema = new Schema(
 
 const userMediaSchema = new Schema(
   {
-    mediaId: { type: String, required: true },
-    userId: { type: String, required: true },
+    mediaId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "media_v2",
+      required: true,
+    },
+    userId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "users",
+      required: true,
+    },
+  },
+  { versionKey: false }
+);
+
+const userSchema = new Schema(
+  {
+    following: { type: Boolean },
+    igUserId: { type: Number, required: true },
   },
   { versionKey: false }
 );
 
 const Media = mongoose.model("media_v2", mediaSchema);
-const Users = mongoose.model("user_media", userMediaSchema);
+const UsersMedia = mongoose.model("user_media", userMediaSchema);
+const Users = mongoose.model("users", userSchema);
+mongoose.set("debug", true);
 
 //Index page (static HTML)
 app.route("/").get(function (req, res) {
@@ -70,7 +88,7 @@ app.route("/").get(function (req, res) {
 });
 
 //Routing for API
-apiRoutes(app, Media, Users);
+apiRoutes(app, Media, UsersMedia, Users);
 
 //404 Not Found Middleware
 app.use(function (req, res, next) {
